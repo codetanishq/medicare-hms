@@ -1,0 +1,41 @@
+<h1><?= $this->escapeHtml(ucfirst($this->role)) ?> Dashboard</h1>
+<?php if ($this->role === 'admin'): ?>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Total Patients</h5>
+                    <p class="card-text"><?= $this->escapeHtml($this->data['totalPatients']) ?></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Today's Appointments</h5>
+                    <p class="card-text"><?= $this->escapeHtml($this->data['todayAppointments']) ?></p>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php elseif ($this->role === 'doctor'): ?>
+    <h2>Your Appointments</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Patient</th>
+                <th>Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($this->data['appointments'] as $appointment): ?>
+                <tr>
+                    <td><?= $this->escapeHtml($appointment['patient_name']) ?></td>
+                    <td><?= $this->escapeHtml($appointment['appointment_date']) ?></td>
+                    <td><?= $this->escapeHtml($appointment['status']) ?></td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+<?php endif; ?>

@@ -1,0 +1,29 @@
+<h1>Patients</h1>
+<a href="<?= $this->url( 'patient/add') ?>" class="btn btn-primary">Add Patient</a>
+<table class="table mt-4">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Gender</th>
+            <th>Contact</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($this->patients as $patient): ?>
+            <tr>
+                <td><?= $this->escapeHtml($patient['name']) ?></td>
+                <td><?= $this->escapeHtml($patient['age']) ?></td>
+                <td><?= $this->escapeHtml($patient['gender']) ?></td>
+                <td><?= $this->escapeHtml($patient['contact']) ?></td>
+                <td>                
+                    <a href="<?= $this->url('patient/profile', ['id' => $patient['id']]) ?>" class="btn btn-sm btn-info">View</a>
+                    <?php if ($this->authService()->hasIdentity() && $this->isAllowed($this->authService()->getIdentity()->role, 'patient.edit')): ?>
+                        <a href="<?= $this->url('patient/edit', ['id' => $patient['id']]) ?>" class="btn btn-sm btn-warning">Edit</a>
+                    <?php endif; ?>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>

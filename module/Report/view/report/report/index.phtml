@@ -1,0 +1,18 @@
+<h1>Appointment Report</h1>
+<a href="<?= $this->url('report/pdf') ?>" class="btn btn-primary">Download PDF</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Status</th>
+            <th>Count</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($this->stats as $stat): ?>
+            <tr>
+                <td><?= $this->escapeHtml($stat['status']) ?></td>
+                <td><?= $this->escapeHtml($stat['count']) ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>

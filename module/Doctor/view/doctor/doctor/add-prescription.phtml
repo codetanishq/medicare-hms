@@ -1,0 +1,28 @@
+<h1>Add Prescription for <?= $this->escapeHtml($this->patient['name']) ?></h1>
+<?php if ($this->error): ?>
+    <div class="alert alert-danger">
+        <?= $this->escapeHtml($this->error) ?>
+    </div>
+<?php endif; ?>
+<form method="post" action="<?= $this->url('doctor/add-prescription', ['patient_id' => $patient['id']]) ?>">
+    <div class="form-group">
+        <label>Appointment</label>
+        <select name="appointment_id" class="form-control" required>
+            <option value="">Select Appointment</option>
+            <?php foreach ($this->appointments as $appointment): ?>
+                <option value="<?= $this->escapeHtml($appointment['id']) ?>">
+                    <?= $this->escapeHtml($appointment['appointment_date'] . ' with Dr. ' . $appointment['doctor_name']) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Medication</label>
+        <input type="text" name="medication" class="form-control" required>
+    </div>
+    <div class="form-group">
+        <label>Dosage</label>
+        <input type="text" name="dosage" class="form-control" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>

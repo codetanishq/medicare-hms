@@ -1,0 +1,20 @@
+<h1>Manage Staff</h1>
+<a href="<?= $this->url('admin/staff/add') ?>" class="btn btn-primary">Add Staff</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Email</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($this->staff as $staff): ?>
+            <tr>
+                <td><?= $this->escapeHtml($staff['username']) ?></td>
+                <td><?= $this->escapeHtml($staff['role']) ?></td>
+                <td><?= $this->escapeHtml($staff['email']) ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>

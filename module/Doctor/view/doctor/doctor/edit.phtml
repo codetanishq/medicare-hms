@@ -1,0 +1,26 @@
+<h1>Edit Doctor</h1>
+<?php if ($this->error): ?>
+    <div class="alert alert-danger">
+        <?= $this->escapeHtml($this->error) ?>
+    </div>
+<?php endif; ?>
+<?php if ($this->doctor): ?>
+    <form method="post" action="<?= $this->url('doctor/edit', ['id' => $this->doctor['id']]) ?>">
+        <div class="form-group">
+            <label>Name</label>
+            <input type="text" name="name" class="form-control" value="<?= $this->escapeHtml($this->doctor['name']) ?>" required>
+        </div>
+        <div class="form-group">
+            <label>Specialization</label>
+            <input type="text" name="specialization" class="form-control" value="<?= $this->escapeHtml($this->doctor['specialization']) ?>" required>
+        </div>
+        <div class="form-group">
+            <label>Contact</label>
+            <input type="text" name="contact" class="form-control" value="<?= $this->escapeHtml($this->doctor['contact']) ?>">
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a href="<?= $this->url('doctor') ?>" class="btn btn-secondary">Cancel</a>
+    </form>
+<?php else: ?>
+    <div class="alert alert-danger">Doctor not found.</div>
+<?php endif; ?>

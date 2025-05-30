@@ -1,0 +1,53 @@
+<h1>Edit Appointment</h1>
+<?php if ($this->error): ?>
+    <div class="alert alert-danger">
+        <?= $this->escapeHtml($this->error) ?>
+    </div>
+<?php endif; ?>
+<?php if ($this->appointment): ?>
+    <form method="post" action="<?= $this->url('appointment/edit', ['id' => $this->appointment['id']]) ?>">
+        <div class="form-group">
+            <label>Patient</label>
+            <select name="patient_id" required>
+                <option value="">Select Patient</option>
+                <?php foreach ($this->patients as $patient): ?>
+                    <option value="<?= $this->escapeHtml($patient['id']) ?>" 
+                        <?= $patient['id'] == $this->appointment['patient_id'] ? 'selected' : '' ?>>
+                        <?= $this->escapeHtml($patient['name']) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Doctor</label>
+            <select name="doctor_id" required>
+                <option value="">Select Doctor</option>
+                    <?php foreach ($this->doctors as $data): ?>
+                        <option value="<?php echo $this->escapeHtml($data['id']); ?>" 
+                            <?php echo $data['id'] == $this->appointment['id'] ? 'selected' : ''; ?>>
+                            <?php echo $this->escapeHtml($data['name']); ?>
+                        </option>
+                    <?php endforeach; ?>
+                
+                    
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Date</label>
+            <input type="datetime-local" name="date" class="form-control" 
+                   value="<?= date('d-m-Y\TH:i', strtotime($this->appointment['appointment_date'])) ?>" >
+        </div>
+        <div class="form-group">
+            <label>Status</label>
+            <select name="status" class="form-control" required>
+                <option value="scheduled" <?= $this->appointment['status'] === 'scheduled' ? 'selected' : '' ?>>Scheduled</option>
+                <option value="completed" <?= $this->appointment['status'] === 'completed' ? 'selected' : '' ?>>Completed</option>
+                <option value="cancelled" <?= $this->appointment['status'] === 'cancelled' ? 'selected' : '' ?>>Cancelled</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a href="<?= $this->url('appointment') ?>" class="btn btn-secondary">Cancel</a>
+    </form>
+<?php else: ?>
+    <div class="alert alert-danger">Appointment not found.</div>
+<?php endif; ?>

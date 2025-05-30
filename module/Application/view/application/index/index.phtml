@@ -1,0 +1,59 @@
+<?php
+/**
+ * @var Laminas\View\Renderer\PhpRenderer $this
+ */
+?>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar py-4">
+            <div class="position-sticky">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/patient">Patients</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/doctor">Doctors</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/appointment">Appointments</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/report">Reports</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 mt-4">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body text-center">
+                            <!-- <a class="nav-link active" href="/patient">Patients</a> -->
+                            <h5 class="card-title"><span><a class="nav-link active nav-item" href="/patient">Total Patients</a></span></h5>
+                            <p class="card-text display-6"><?php echo $this->totalPatients; ?></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body text-center">
+                            <h5 class="card-title"><a class="nav-link" href="/appointment">Today's Appointments</a></h5>
+                            <p class="card-text display-6"><?php echo $this->todayAppointments; ?></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body text-center">
+                            <h5 class="card-title"><a class="nav-link" href="/doctors">Total Doctors</a></h5>
+                            <p class="card-text display-6"><?php echo $this->totalDoctors; ?></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>

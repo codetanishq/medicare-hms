@@ -1,0 +1,88 @@
+<?php
+/**
+ * @var Laminas\View\Renderer\PhpRenderer $this
+ */
+?>
+<?= $this->doctype() ?>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <?= $this->headTitle('MediCare HMS')->setSeparator(' - ')->setAutoEscape(false) ?>
+        <?= $this->headMeta()
+            ->appendName('viewport', 'width=device-width, initial-scale=1.0')
+            ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
+        ?>
+        <!-- Styles -->
+        <?= $this->headLink()
+            ->prependStylesheet($this->basePath('vendor/fullcalendar/main.css'))
+            ->prependStylesheet($this->basePath('vendor/bootstrap/css/bootstrap.min.css'))
+        ?>
+        <!-- Scripts -->
+        <?= $this->headScript() ?>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4" role="navigation">
+            <div class="container">
+                <a class="navbar-brand" href="<?= $this->url('home') ?>">MediCare HMS</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                   <ul class="navbar-nav me-auto">
+                            <li class="nav-item">
+                                <a class="nav-link <?= $this->url('home') === $this->serverUrl(true) ? 'active' : '' ?>" href="<?= $this->url('home') ?>">Home</a>
+                            </li>
+                            <?php if ($this->authService()->hasIdentity() && $this->isAllowed($this->authService()->getIdentity()->role, 'patient.view')): ?>
+                                <li class="nav-item">
+                                    <a class="nav-link <?= strpos($this->serverUrl(true), '/patient') !== false ? 'active' : '' ?>" href="<?= $this->url('patient') ?>">Patients</a>
+                                </li>
+                            <?php endif; ?>
+                            <?php if ($this->authService()->hasIdentity() && $this->isAllowed($this->authService()->getIdentity()->role, 'doctor.view')): ?>
+                                <li class="nav-item">
+                                    <a class="nav-link <?= strpos($this->serverUrl(true), '/doctor') !== false ? 'active' : '' ?>" href="<?= $this->url('doctor') ?>">Doctors</a>
+                                </li>
+                            <?php endif; ?>
+                            <?php if ($this->authService()->hasIdentity() && $this->isAllowed($this->authService()->getIdentity()->role, 'appointment.view')): ?>
+                                <li class="nav-item">
+                                    <a class="nav-link <?= strpos($this->serverUrl(true), '/appointment') !== false ? 'active' : '' ?>" href="<?= $this->url('appointment') ?>">Appointments</a>
+                                </li>
+                            <?php endif; ?>
+                            <?php if ($this->authService()->hasIdentity() && $this->isAllowed($this->authService()->getIdentity()->role, 'report.generate')): ?>
+                                <li class="nav-item">
+                                    <a class="nav-link <?= strpos($this->serverUrl(true), '/report') !== false ? 'active' : '' ?>" href="<?php echo $this->url('report'); ?>">Reports</a>
+                                </li>
+                            <?php endif; ?>
+                    </ul>                                               
+                    <ul class="navbar-nav ms-auto">
+                        <?php if ($this->authService()->hasIdentity()): ?>
+                            <li class="nav-item">
+                                <a class="nav-link" href="<?= $this->url('logout') ?>">Logout</a>
+                            </li>
+                        <?php else: ?>
+                            <li class="nav-item">
+                                <a class="nav-link <?= strpos($this->serverUrl(true), '/login') !== false ? 'active' : '' ?>" href="<?= $this->url('login') ?>">Login</a>
+                            </li>
+                        <?php endif; ?>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="container">
+            <?php if ($this->authService()->hasIdentity()): ?>
+                <h1>Hello, <?= $this->escapeHtml($this->authService()->getIdentity()->username) ?></h1>
+            <?php else: ?>
+                <h1>Welcome to MediCare HMS</h1>
+            <?php endif; ?>
+            <?= $this->content ?>
+            <hr>
+            <footer>
+                <p>© <?= date('Y') ?> MediCare HMS. All rights reserved.</p>
+            </footer>
+        </div>
+        <?= $this->inlineScript()
+            ->prependFile($this->basePath('vendor/fullcalendar/main.js'))
+            ->prependFile($this->basePath('vendor/bootstrap/js/bootstrap.bundle.min.js'))
+            ->prependFile($this->basePath('vendor/jquery/jquery.min.js'))
+        ?>
+    </body>
+</html>

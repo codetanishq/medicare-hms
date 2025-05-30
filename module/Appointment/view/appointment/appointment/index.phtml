@@ -1,0 +1,47 @@
+<h1>Appointments</h1>
+<a href="<?= $this->url('appointment/add') ?>" class="btn btn-primary">Add Appointment</a>
+<div id="calendar"></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        events: [
+            <?php foreach ($this->appointments as $appointment): ?>
+                {
+                    title: '<?= $this->escapeJs($appointment['patient_name']) ?>',
+                    start: '<?= $this->escapeJs($appointment['appointment_date']) ?>'
+                },
+            <?php endforeach; ?>
+        ]
+    });
+    calendar.render();
+});
+</script>
+<table class="table mt-4">
+    <thead>
+        <tr>
+            <th>Patient</th>
+            <th>Doctor</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($this->appointments as $appointment): ?>
+            <tr>
+                <td><?= $this->escapeHtml($appointment['patient_name']) ?></td>
+                <td><?= $this->escapeHtml($appointment['doctor_name']) ?></td>
+                <td><?= $this->escapeHtml($appointment['appointment_date']) ?></td>
+                <td><?= $this->escapeHtml($appointment['status']) ?></td>
+                <td>
+                    <?php if ($this->authService()->hasIdentity() && $this->isAllowed($this->authService()->getIdentity()->role, 'appointment.edit')): ?>
+                        <a href="<?= $this->url('appointment/edit', ['id' => $appointment['id']]) ?>" class="btn btn-sm btn-warning">Edit</a>
+                    <?php endif; ?>
+                </td>
+
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
