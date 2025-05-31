@@ -30,8 +30,8 @@ class AppointmentController extends AbstractActionController
         $appointments = $this->dbAdapter->query(
             'SELECT a.*, p.name AS patient_name, d.name AS doctor_name 
              FROM appointments a 
-             JOIN patients p ON a.patient_id = p.id 
-             JOIN doctors d ON a.doctor_id = d.id',
+             LEFT JOIN patients p ON a.patient_id = p.id 
+             LEFT JOIN doctors d ON a.doctor_id = d.id',
             []
         )->toArray();
         return ['appointments' => $appointments];

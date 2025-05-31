@@ -67,7 +67,7 @@ return [
             'admin' => ['doctor'],
         ],
         'permissions' => [
-    'patient' => [
+        'patient' => [
         'patient.view',
         'appointment.view',
     ],

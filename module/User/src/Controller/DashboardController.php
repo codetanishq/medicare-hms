@@ -24,7 +24,7 @@ class DashboardController extends AbstractActionController
 
         $identity = $this->authService->getIdentity();
         $role = $identity->role;
-
+        
         $data = [];
         if ($role === 'admin') {
             $data['totalPatients'] = $this->dbAdapter->query('SELECT COUNT(*) FROM patients', [])->current()->count;

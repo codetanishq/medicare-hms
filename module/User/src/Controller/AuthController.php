@@ -4,6 +4,8 @@ namespace User\Controller;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\Authentication\AuthenticationService;
 use Laminas\Db\Adapter\Adapter;
+use Laminas\Http\Request;
+
 
 class AuthController extends AbstractActionController
 {
@@ -22,8 +24,10 @@ class AuthController extends AbstractActionController
             return $this->redirect()->toRoute('dashboard');
         }
 
-        if ($this->getRequest()->isPost()) {
-            $data = $this->getRequest()->getPost();
+        /** @var Request $request */
+        $request=$this->getRequest();
+        if ($request->isPost()) {
+            $data = $request->getPost();
             $username = $data['username'];
             $password = $data['password'];
 
