@@ -1,5 +1,14 @@
+
 <h1>Doctors</h1>
 <a href="<?= $this->url('doctor/add') ?>" class="btn btn-primary">Add Doctor</a>
+<!-- Search Form -->
+<form method="GET" class="mb-4">
+    <div class="input-group">
+        <input type="text" name="search" class="form-control" placeholder="Search by name or specialization" value="<?= $this->escapeHtml($this->search) ?>">
+        <button type="submit" class="btn btn-primary">Search</button>
+        <a href="<?= $this->url('doctor') ?>" class="btn btn-secondary ms-2">Clear</a>
+    </div>
+</form>
 <table class="table mt-4">
     <thead>
         <tr>

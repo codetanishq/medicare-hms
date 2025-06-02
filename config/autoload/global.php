@@ -31,17 +31,5 @@ return [
             \Laminas\Session\SessionManager::class => \Laminas\Session\Service\SessionManagerFactory::class,
         ],
     ],
-    'controller_plugins' => [
-        'factories' => [
-            \Laminas\Mvc\Plugin\FlashMessenger\FlashMessenger::class => function ($container) {
-                $flashMessenger = new \Laminas\Mvc\Plugin\FlashMessenger\FlashMessenger();
-                $flashMessenger->setSessionManager($container->get(\Laminas\Session\SessionManager::class));
-                return $flashMessenger;
-            },
-        ],
-        'aliases' => [
-            'flashmessenger' => \Laminas\Mvc\Plugin\FlashMessenger\FlashMessenger::class,
-            'flashMessenger' => \Laminas\Mvc\Plugin\FlashMessenger\FlashMessenger::class,
-        ],
-    ],
+    
 ];

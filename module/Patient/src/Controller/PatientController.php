@@ -26,8 +26,28 @@ class PatientController extends AbstractActionController
             return $this->redirect()->toRoute('login');
         }
 
-        $patients = $this->dbAdapter->query('SELECT * FROM patients', [])->toArray();
-        return ['patients' => $patients];
+        $search = $this->params()->fromQuery('search', '');
+        $query = 'SELECT p.*, u.email FROM patients p LEFT JOIN users u ON p.user_id = u.id WHERE 1=1';
+        $params = [];
+        $error = null;
+
+        if (!empty($search)) {
+            $query .= ' AND (p.name LIKE ? OR p.contact LIKE ?)';
+            $params = ["%$search%", "%$search%"];
+        }
+
+        try {
+            $patients = $this->dbAdapter->query($query, $params)->toArray();
+        } catch (\Exception $e) {
+            $patients = [];
+            $error = 'Error fetching doctors: ' . $e->getMessage();
+        }
+
+        return [
+            'patients' => $patients,
+            'search' => $search,
+            'error' => $error
+        ];
     }
 
     public function addAction()

@@ -51,6 +51,15 @@ return [
                             ],
                         ],
                     ],
+                    'fetch-events' => [
+                        'type' => 'Literal',
+                        'options' => [
+                            'route' => '/fetch-events',
+                            'defaults' => [
+                                'action' => 'fetch-events',
+                            ],
+                        ],
+                    ],
                 ],
             ],
         ],
@@ -58,6 +67,9 @@ return [
     'view_manager' => [
         'template_path_stack' => [
             __DIR__ . '/../view',
+        ],
+        'strategies'=>[
+            'ViewJsonStrategy',
         ],
         'template_map' => [
             'appointment/appointment/index' => __DIR__ . '/../view/appointment/appointment/index.phtml',

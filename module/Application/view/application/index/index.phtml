@@ -10,17 +10,28 @@
             <div class="position-sticky">
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link active" href="/patient">Patients</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/doctor">Doctors</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/appointment">Appointments</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/report">Reports</a>
-                    </li>
+                                <a class="nav-link <?= $this->url('home') === $this->serverUrl(true) ? 'active' : '' ?>" href="<?= $this->url('home') ?>">Home</a>
+                            </li>
+                            <?php if ($this->authService()->hasIdentity() && $this->isAllowed($this->authService()->getIdentity()->role, 'patient.view')): ?>
+                                <li class="nav-item">
+                                    <a class="nav-link <?= strpos($this->serverUrl(true), '/patient') !== false ? 'active' : '' ?>" href="<?= $this->url('patient') ?>">Patients</a>
+                                </li>
+                            <?php endif; ?>
+                            <?php if ($this->authService()->hasIdentity() && $this->isAllowed($this->authService()->getIdentity()->role, 'doctor.view')): ?>
+                                <li class="nav-item">
+                                    <a class="nav-link <?= strpos($this->serverUrl(true), '/doctor') !== false ? 'active' : '' ?>" href="<?= $this->url('doctor') ?>">Doctors</a>
+                                </li>
+                            <?php endif; ?>
+                            <?php if ($this->authService()->hasIdentity() && $this->isAllowed($this->authService()->getIdentity()->role, 'appointment.view')): ?>
+                                <li class="nav-item">
+                                    <a class="nav-link <?= strpos($this->serverUrl(true), '/appointment') !== false ? 'active' : '' ?>" href="<?= $this->url('appointment') ?>">Appointments</a>
+                                </li>
+                            <?php endif; ?>
+                            <?php if ($this->authService()->hasIdentity() && $this->isAllowed($this->authService()->getIdentity()->role, 'report.generate')): ?>
+                                <li class="nav-item">
+                                    <a class="nav-link <?= strpos($this->serverUrl(true), '/report') !== false ? 'active' : '' ?>" href="<?php echo $this->url('report'); ?>">Reports</a>
+                                </li>
+                            <?php endif; ?>
                 </ul>
             </div>
         </nav>

@@ -1,0 +1,26 @@
+
+#calendar {
+    max-width: 1000px;
+    margin: 40px auto;
+    max-height: 900px;
+}
+.fc {
+    font-size: 14px;
+    color: black;
+    text-decoration: none;
+}
+.fc-event {
+    cursor: pointer;
+    color: black;
+    background-color: blue;
+}
+
+.fc .fc-col-header-cell-cushion{
+    color: black;
+    text-decoration: none;
+
+}
+.fc .fc-daygrid-day-number{
+    color: black;
+    text-decoration: none;
+}

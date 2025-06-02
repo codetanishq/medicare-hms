@@ -1,12 +1,5 @@
 {
   "dependencies": {
-    "@fullcalendar/angular": "^6.1.17",
-    "@fullcalendar/core": "^6.1.17",
-    "@fullcalendar/daygrid": "^6.1.17",
-    "@fullcalendar/list": "^6.1.15",
-    "@fullcalendar/timegrid": "^6.1.17",
-    "bootstrap": "^5.3.6",
-    "fullcalendar": "^6.1.17",
     "jquery": "^3.7.1"
   },
   "name": "medicare-hms",
@@ -14,9 +7,13 @@
   "description": "## Introduction",
   "main": "index.js",
   "scripts": {
+    "build": "webpack --mode production",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "webpack": "^5.99.9"
+  }
 }

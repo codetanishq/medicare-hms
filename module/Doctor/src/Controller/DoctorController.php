@@ -25,8 +25,28 @@ class DoctorController extends AbstractActionController
         if (!$identity || !$this->isAllowed($identity->role, 'doctor.view')) {
             return $this->redirect()->toRoute('home');
         }
-        $doctors = $this->dbAdapter->query('SELECT * FROM doctors', [])->toArray();
-        return ['doctors' => $doctors];
+        $search = $this->params()->fromQuery('search', '');
+        $query = 'SELECT d.*, u.email FROM doctors d LEFT JOIN users u ON d.user_id = u.id WHERE 1=1';
+        $params = [];
+        $error = null;
+
+        if (!empty($search)) {
+            $query .= ' AND (d.name LIKE ? OR d.specialization LIKE ?)';
+            $params = ["%$search%", "%$search%"];
+        }
+
+        try {
+            $doctors = $this->dbAdapter->query($query, $params)->toArray();
+        } catch (\Exception $e) {
+            $doctors = [];
+            $error = 'Error fetching doctors: ' . $e->getMessage();
+        }
+
+        return [
+            'doctors' => $doctors,
+            'search' => $search,
+            'error' => $error
+        ];
     }
 
     public function addAction()

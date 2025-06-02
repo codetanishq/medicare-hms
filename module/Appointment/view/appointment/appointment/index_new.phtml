@@ -1,0 +1,40 @@
+<?php
+$this->headLink()->appendStylesheet('/css/custom.css');
+?>
+
+<div class="container">
+    <h2>Appointment Calendar</h2>
+    <div id="calendar"></div>
+</div>
+
+<!-- Bootstrap Modal -->
+<div class="modal fade" id="event_entry_modal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel">Add New Appointment</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="event_form">
+                    <div class="mb-3">
+                        <label for="event_start_date" class="form-label">Appointment Date</label>
+                        <input type="datetime-local" class="form-control" id="event_start_date" name="start_date">
+                    </div>
+                    <div class="mb-3">
+                        <label for="patient_id" class="form-label">Patient ID</label>
+                        <input type="number" class="form-control" id="patient_id" name="patient_id" value="1" placeholder="Enter patient ID">
+                    </div>
+                    <div class="mb-3">
+                        <label for="doctor_id" class="form-label">Doctor ID</label>
+                        <input type="number" class="form-control" id="doctor_id" name="doctor_id" value="1" placeholder="Enter doctor ID">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="saveEvent()">Save Appointment</button>
+            </div>
+        </div>
+    </div>
+</div>

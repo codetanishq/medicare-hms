@@ -1,103 +1,121 @@
-<h1>Appointments</h1>
+<?php
+$this->headTitle('Appointment Calendar');
+$this->headScript()
+    ->appendFile('https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js')
+    ->appendFile('https://code.jquery.com/jquery-3.6.0.min.js')
+    ->appendFile('https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js')
+    ->appendFile('https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.js');
+$this->headLink()
+    ->appendStylesheet('https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css')
+    ->appendStylesheet('/css/custom.css');
+?>
+<a href="<?= $this->url('appointment/add') ?>" class="btn btn-primary" style="margin-bottom:12px;">Add Appointment</a>
 
 
-<!-- Toast UI Calendar CSS -->
-<link rel="stylesheet" href="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.css">
+<form method="GET" class="mb-4">
+    <div class="row">
+        <div class="col-md-4">
+            <input type="text" name="search" class="form-control" placeholder="Search by patient or doctor name" value="<?= $this->escapeHtml($this->search) ?>">
+        </div>
+        <div class="col-md-3">
+            <input type="date" name="date" class="form-control" value="<?= $this->escapeHtml($this->date) ?>">
+        </div>
+        <div class="col-md-3">
+            <select name="status" class="form-control">
+                <option value="">All Statuses</option>
+                <option value="scheduled" <?= $this->status === 'scheduled' ? 'selected' : '' ?>>Scheduled</option>
+                <option value="completed" <?= $this->status === 'completed' ? 'selected' : '' ?>>Completed</option>
+                <option value="cancelled" <?= $this->status === 'cancelled' ? 'selected' : '' ?>>Cancelled</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary">Search</button>
+            <a href="<?= $this->url('appointment') ?>" class="btn btn-secondary">Clear</a>
+        </div>
+    </div>
+</form>
+<?php if ($this->error): ?>
+    <div class="alert alert-danger">
+        <?= $this->escapeHtml($this->error) ?>
+    </div>
+<?php endif; ?>
 
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<div class="container">
+    <h1>Appointment Calendar</h1>
+    <div class="row">
+        <div class="col-md-6">
+            <div id="calendar"></div>
+        </div>
+        <div class="col-md-6">
+            <table border="2" class="table mt-4 ">
+        <thead>
+            <tr>
+                <th>Patient</th>
+                <th>Doctor</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($this->appointments as $appointment): ?>
+                <tr>
+                    <td><?= $this->escapeHtml($appointment['patient_name'] ?? 'Unknown') ?></td>
+                    <td><?= $this->escapeHtml($appointment['doctor_name'] ?? 'Unknown') ?></td>
+                    <td><?= $this->escapeHtml($appointment['appointment_date']) ?></td>
+                    <td><?= $this->escapeHtml($appointment['status']) ?></td>
+                    <td>
+                        <?php if ($this->authService()->hasIdentity() && $this->isAllowed($this->authService()->getIdentity()->role, 'appointment.edit')): ?>
+                            <a href="<?= $this->url('appointment/edit', ['id' => $appointment['id']]) ?>" class="btn btn-sm btn-warning">Edit</a>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+            </table>
+        </div>
 
-<!-- Toast UI Calendar JS -->
-<script src="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.js"></script>
+    </div>
+</div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('Initializing Toast UI Calendar...');
+    document.addEventListener('DOMContentLoaded', function() {
+    console.log('Initializing FullCalendar v6.1.17...');
     var calendarEl = document.getElementById('calendar');
-    if (!calendarEl) {
-        console.error('Calendar element not found');
+    if(!calendarEl){
+        console.error("calender container not founf");
         return;
     }
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        headerToolbar: {
+        left: 'prev,next',
+        center: 'title',
+        right: 'dayGridWeek,dayGridDay' 
+        },
+        timeZone: 'local',
+        editable: true,
+        selectable: true,
+        events: '/appointment/fetch-events',
+        eventClick: function(info) {
+            const event = info.event;
+            const title = event.title;
+            const id = event.id;
+            let patient = 'Unknown', doctor = 'Unknown';
+            const match = title.match(/Consultation: (.+) with Dr\. (.+)/);
+            if (match) {
+                patient = match[1];
+                doctor = match[2];
+            }
 
-    var events = [
-        <?php
-        $appointmentCount = count($this->appointments);
-        $index = 0;
-        foreach ($this->appointments as $appointment) {
-            $date = strtotime($appointment['appointment_date']);
-            if ($date === false || $date < strtotime('1970-01-01')) {
-                echo "// Skipped invalid date for appointment {$appointment['id']}: {$appointment['appointment_date']}\n";
-                continue;
-            }
-            if (empty($appointment['patient_name']) || empty($appointment['doctor_name'])) {
-                echo "// Skipped appointment {$appointment['id']}: Missing patient_name or doctor_name\n";
-                continue;
-            }
-            echo "{\n";
-            echo "    id: '" . $appointment['id'] . "',\n";
-            echo "    calendarId: '1',\n";
-            echo "    title: '" . $this->escapeJs($appointment['patient_name'] . ' with ' . $appointment['doctor_name']) . "',\n";
-            echo "    start: '" . date('c', $date) . "',\n";
-            echo "    category: 'time',\n";
-            echo "    raw: { status: '" . $this->escapeJs($appointment['status']) . "' }\n";
-            echo "}";
-            if ($index < $appointmentCount - 1) {
-                echo ",";
-            }
-            echo "\n";
-            $index++;
+            alert(
+                'Appointment ID: ' + id + '\n' +
+                'Patient: ' + patient + '\n' +
+                'Doctor: Dr. ' + doctor + '\n' +
+                'Start Time: ' + event.start.toLocaleString()
+            );
         }
-        ?>
-    ];
-
-    console.log('Events:', events);
-
-    try {
-        var calendar = new tui.Calendar(calendarEl, {
-            defaultView: 'week',
-            taskView: false,
-            scheduleView: ['time'],
-            calendars: [{ id: '1', name: 'Appointments', bgColor: '#9e5fff', borderColor: '#9e5fff' }],
-            useFormPopup: false,
-            useDetailPopup: true
-        });
-        calendar.createEvents(events);
-        calendar.on('clickEvent', function(info) {
-            alert('Appointment: ' + info.event.title + '\nStatus: ' + info.event.raw.status);
-        });
-        console.log('Toast UI Calendar rendered successfully');
-    } catch (error) {
-        console.error('Toast UI Calendar render error:', error);
-    }
+    });
+    calendar.render();
 });
 </script>
-<a href="<?= $this->url('appointment/add') ?>" class="btn btn-primary">Add Appointment</a>
-
-<!-- Table -->
-<table class="table mt-4">
-    <thead>
-        <tr>
-            <th>Patient</th>
-            <th>Doctor</th>
-            <th>Date</th>
-            <th>Status</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php foreach ($this->appointments as $appointment): ?>
-            <tr>
-                <td><?= $this->escapeHtml($appointment['patient_name'] ?? 'Unknown') ?></td>
-                <td><?= $this->escapeHtml($appointment['doctor_name'] ?? 'Unknown') ?></td>
-                <td><?= $this->escapeHtml($appointment['appointment_date']) ?></td>
-                <td><?= $this->escapeHtml($appointment['status']) ?></td>
-                <td>
-                    <?php if ($this->authService()->hasIdentity() && $this->isAllowed($this->authService()->getIdentity()->role, 'appointment.edit')): ?>
-                        <a href="<?= $this->url('appointment/edit', ['id' => $appointment['id']]) ?>" class="btn btn-sm btn-warning">Edit</a>
-                    <?php endif; ?>
-                </td>
-            </tr>
-        <?php endforeach; ?>
-    </tbody>
-</table>
-<div id="calendar" style="max-width: 900px; margin: 40px auto; border: 1px solid #ccc;"></div>
